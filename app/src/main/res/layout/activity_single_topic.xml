@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SingleTopicActivity">
+
+    <RelativeLayout
+        android:layout_above="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_back_24" />
+
+        <TextView
+            android:id="@+id/topicTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/backBtn"
+            android:layout_marginTop="10dp"
+            android:textSize="25dp" />
+
+        <RelativeLayout
+            android:id="@+id/titleDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/topicTitle"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/posterAvatar"
+                android:layout_width="45dp"
+                android:layout_height="45dp" />
+
+            <TextView
+                android:id="@+id/posterName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/posterAvatar"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/posterDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/posterName"
+                android:layout_alignLeft="@+id/posterName"
+                android:textSize="16dp" />
+            <TextView
+                android:id="@+id/postTime"
+                android:layout_alignLeft="@+id/posterDetail"
+                android:layout_below="@+id/posterDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleDetail">
+
+            <org.sufficientlysecure.htmltextview.HtmlTextView
+                android:id="@+id/topicContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textIsSelectable="true"
+                android:textSize="20dp" />
+        </ScrollView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:theme="@style/Theme.Oldmanemu"
+        android:layout_marginBottom="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/comment"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="评论" />
+
+        <TextView
+            android:id="@+id/fav"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="收藏" />
+        <TextView
+            android:id="@+id/like"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="点赞" />
+        <TextView
+            android:id="@+id/score"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="打分" />
+    </LinearLayout>
+</RelativeLayout>

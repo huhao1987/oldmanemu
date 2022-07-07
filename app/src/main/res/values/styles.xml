@@ -1,0 +1,11 @@
+<resources>
+    <style name="AppTheme.Blue" parent="Theme.AppCompat.NoActionBar">
+        <!-- Specific Text View Color -->
+        <item name="customTextViewBackAttributeColor">@color/white</item>
+    </style>
+
+    <style name="AppTheme.Red" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Specific Text View Color -->
+        <item name="customTextViewBackAttributeColor">@color/black</item>
+    </style>
+</resources>
