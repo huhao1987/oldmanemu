@@ -8,8 +8,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.enums.PopupAnimation
 import hh.app.oldmanemu.CustomGlideImageGetter
 import hh.app.oldmanemu.GlideApp
+import hh.app.oldmanemu.PopupViews.CommentPopup
 import hh.app.oldmanemu.R
 import hh.app.oldmanemu.databinding.ActivitySingleTopicBinding
 import hh.app.oldmanemu.retrofit.GetPespo
@@ -47,16 +50,27 @@ class SingleTopicActivity : AppCompatActivity() {
             GlideApp.with(this)
                 .load(GetPespo.baseUrl+it.user.avatar)
                 .into(binding.posterAvatar)
-            binding.posterDetail.text=it.user.avatar
+            binding.posterDetail.text=it.user.level
             binding.postTime.text=it.postTime
             binding.comment.text="评论 ${it.commentDetail.commentNum}"
+            it.commentDetail.commentList?.let {
+                list->
+                binding.comment.setOnClickListener {
+                        view->
+                    XPopup.Builder(this)
+                        .popupAnimation(PopupAnimation.ScrollAlphaFromBottom)
+                        .isCenterHorizontal(true)
+                        .asCustom(CommentPopup(this,list))
+                        .show()
+                }
+            }
+
             binding.topicContent.setHtml(it.content, CustomGlideImageGetter(binding.topicContent,true),object:OnImageClickListener{
                 override fun onClick(image: String?) {
                     startActivity(Intent(this@SingleTopicActivity,ImageViewActivity::class.java).also{
                         it.putExtra("url",image)
                     })
                 }
-
             })
         })
         else {

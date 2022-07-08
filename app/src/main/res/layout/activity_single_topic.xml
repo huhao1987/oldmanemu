@@ -56,12 +56,13 @@
                 android:layout_below="@+id/posterName"
                 android:layout_alignLeft="@+id/posterName"
                 android:textSize="16dp" />
+
             <TextView
                 android:id="@+id/postTime"
-                android:layout_alignLeft="@+id/posterDetail"
-                android:layout_below="@+id/posterDetail"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/posterDetail"
+                android:layout_alignLeft="@+id/posterDetail" />
         </RelativeLayout>
 
         <ScrollView

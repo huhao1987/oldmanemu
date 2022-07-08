@@ -60,7 +60,7 @@ class SingleTopicViewModel : ViewModel() {
                             origincommentList.forEach {
                                 var commentBean=CommentBean()
                                 commentBean.commentContent=
-                                    it.getElementsByClass("message mt-1 break-all").get(0).text().replace("\"","")
+                                    it.getElementsByClass("message mt-1 break-all").get(0).html()
                                 var avatar=it.getElementsByTag("img").attr("src")
                                 var level=it.getElementsByClass("padding-bottom:0;margin-bottom:0;color:; ").text()
                                 var username=it.getElementsByClass("username").text()
