@@ -16,7 +16,6 @@ class OldmanApplication: Application() {
         DialogX.init(this)
         DialogX.globalTheme=DialogX.THEME.AUTO
         createNotificationChannel()
-        initNotification()
     }
 
     private fun createNotificationChannel() {
@@ -35,13 +34,5 @@ class OldmanApplication: Application() {
             notificationManager.createNotificationChannel(channel)
         }
     }
-    private fun initNotification(){
-        WorkManager.getInstance(this).cancelAllWorkByTag("oldmannotify")
-        var notifyWorkRequest= OneTimeWorkRequestBuilder<NotifyWorker>()
-            .setInitialDelay(5, TimeUnit.SECONDS)
-            .addTag("oldmannotify")
-            .build()
-        WorkManager.getInstance(this)
-            .enqueue(notifyWorkRequest)
-    }
+
 }

@@ -7,14 +7,20 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import hh.app.oldmanemu.GlideApp
+import hh.app.oldmanemu.NotifyWorker
 import hh.app.oldmanemu.Utils.SharePerferencesUtil
 import hh.app.oldmanemu.adapters.TopicListAdapter
 import hh.app.oldmanemu.adapters.onClickListener
 import hh.app.oldmanemu.beans.TopicBean
 import hh.app.oldmanemu.databinding.ActivityMainBinding
+import hh.app.oldmanemu.retrofit.CookieInterceptor
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.viewmodels.MainViewModel
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -24,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         if (it.contains("bbs_token")) {
             SharePerferencesUtil.sharedPreferences?.edit {
                 putString("cookie", it)
+                NotifyWorker.SetupNotifyWorker(this@MainActivity, it)
             }
             initViews()
         }
@@ -74,6 +81,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         SharePerferencesUtil.sharedPreferences?.getString("cookie", null)?.apply {
+            NotifyWorker.SetupNotifyWorker(this@MainActivity, this)
             binding.loginBtn.text = "登出账号"
             binding.notifyarea.visibility= View.VISIBLE
             binding.loginBtn.setOnClickListener {

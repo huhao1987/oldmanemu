@@ -16,13 +16,13 @@ class GetPespo {
         var cookie = ""
         var retrofit: Retrofit? = null
 
-        fun init():Retrofit {
+        fun init(cookie:String?=null):Retrofit {
             if(retrofit==null) {
                 val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 }
                 var client = OkHttpClient.Builder()
-                    .addInterceptor(CookieInterceptor())
+                    .addInterceptor(CookieInterceptor(cookie))
                     .addInterceptor(interceptor)
                     .build()
 

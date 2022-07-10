@@ -9,10 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import hh.app.oldmanemu.activities.MainActivity
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.retrofit.OldmanService
@@ -24,9 +21,24 @@ import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
 class NotifyWorker(var cont:Context,workerParameters: WorkerParameters):Worker(cont,workerParameters) {
+    companion object{
+        fun SetupNotifyWorker(context: Context,cookie:String?,duration:Long=10,timeUnit: TimeUnit=TimeUnit.MINUTES){
+            WorkManager.getInstance(context).cancelAllWorkByTag("oldmannotify")
+            var cookiedata= workDataOf("cookie" to cookie)
+            var notifyWorkRequest= OneTimeWorkRequestBuilder<NotifyWorker>()
+                .addTag("oldmannotify")
+                .setInputData(cookiedata)
+                .setInitialDelay(duration,timeUnit)
+                .build()
+            WorkManager.getInstance(context)
+                .enqueue(notifyWorkRequest)
+        }
+    }
     override fun doWork(): Result {
+        var cookie=inputData.getString("cookie")
+
         GetPespo
-            .init()
+            .init(cookie)
             .create(OldmanService::class.java)
             .getHomepage()
             .execute()
@@ -38,13 +50,7 @@ class NotifyWorker(var cont:Context,workerParameters: WorkerParameters):Worker(c
                     }
                 }
             }
-        WorkManager.getInstance(cont).cancelAllWorkByTag("oldmannotify")
-        var notifyWorkRequest= OneTimeWorkRequestBuilder<NotifyWorker>()
-            .addTag("oldmannotify")
-            .setInitialDelay(5,TimeUnit.SECONDS)
-            .build()
-        WorkManager.getInstance(cont)
-            .enqueue(notifyWorkRequest)
+        SetupNotifyWorker(cont,cookie)
         return Result.success()
     }
 
