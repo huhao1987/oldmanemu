@@ -2,18 +2,22 @@ package hh.app.oldmanemu.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import hh.app.oldmanemu.CustomGlideImageGetter
 import hh.app.oldmanemu.GlideApp
+import hh.app.oldmanemu.R
 import hh.app.oldmanemu.activities.ImageViewActivity
 import hh.app.oldmanemu.beans.CommentBean
 import hh.app.oldmanemu.beans.TopicBean
 import hh.app.oldmanemu.databinding.RowCommentBinding
 import hh.app.oldmanemu.databinding.RowTopicBinding
 import hh.app.oldmanemu.retrofit.GetPespo
+import org.sufficientlysecure.htmltextview.OnClickATagListener
 import org.sufficientlysecure.htmltextview.OnImageClickListener
 
 class CommentListAdapter(var context:Context, var commentbeanList: ArrayList<CommentBean>, var onClickListener: onCommentClickListener?=null):
@@ -35,7 +39,15 @@ class CommentListAdapter(var context:Context, var commentbeanList: ArrayList<Com
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var comment=commentbeanList[position]
+        holder.topicTitle.blockQuoteBackgroundColor=context.resources.getColor(R.color.lightgray)
+        holder.topicTitle.blockQuoteStripColor=context.resources.getColor(R.color.lightgray)
+        holder.topicTitle.setOnClickATagListener(object:OnClickATagListener{
+            override fun onClick(widget: View?, spannedText: String?, href: String?): Boolean {
+                Log.d("thetag:::",spannedText+" "+href)
+                return true
+            }
 
+        })
         holder.topicTitle.setHtml(comment.commentContent, CustomGlideImageGetter(holder.topicTitle,true),object:
             OnImageClickListener {
             override fun onClick(image: String?) {

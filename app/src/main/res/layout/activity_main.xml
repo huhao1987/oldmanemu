@@ -6,31 +6,61 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
+
     <RelativeLayout
         android:id="@+id/navBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/userAvatar"
-        android:layout_alignTop="@+id/loginBtn"
-        android:layout_marginLeft="20dp"
-        android:layout_width="32dp"
-        android:layout_height="32dp"/>
+        android:layout_height="60dp">
+
+        <ImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp" />
 
         <TextView
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/userAvatar"
-            android:layout_alignBottom="@+id/userAvatar"
+            android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/userAvatar"/>
+            android:layout_toRightOf="@+id/userAvatar"
+            android:gravity="center" />
+
+        <RelativeLayout
+            android:layout_toRightOf="@+id/userName"
+            android:id="@+id/notifyarea"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/notify"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/notifynum"
+                android:textColor="@color/red"
+                android:layout_centerVertical="true"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="-5dp"
+                android:layout_alignTop="@+id/notify"
+                android:layout_toRightOf="@+id/notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+
         <Button
             android:id="@+id/loginBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:text="登录账号" />
     </RelativeLayout>
@@ -38,9 +68,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topicList"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/navBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/navBar"
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>

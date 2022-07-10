@@ -3,6 +3,7 @@ package hh.app.oldmanemu.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             SharePerferencesUtil.sharedPreferences?.edit {
                 putString("cookie", it)
             }
-            setUpLogin()
+            initViews()
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,14 +35,23 @@ class MainActivity : AppCompatActivity() {
         initViews()
     }
 
+
     private fun initViews() {
         SharePerferencesUtil.shareIntance(this)
         setUpLogin()
-        viewModel.homePageData.observe(this, {
+        viewModel.getHomePageData().observe(this, {
             GlideApp.with(this)
                 .load(GetPespo.baseUrl+it.userInfo?.avatar)
                 .into(binding.userAvatar)
             binding.userName.text=it.userInfo?.userName
+            if(it.notifyNum>0) {
+                binding.notifynum.text = it.notifyNum.toString()
+                binding.notifyarea.visibility= View.VISIBLE
+            }
+            else {
+                binding.notifynum.text = ""
+            }
+
             adapter = TopicListAdapter(this, it.topicList!!, object : onClickListener {
                 override fun onclick(position: Int, topicBean: TopicBean) {
                     startActivity(Intent(this@MainActivity,SingleTopicActivity::class.java).also {
@@ -55,20 +65,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpLogin() {
-
         if (SharePerferencesUtil.sharedPreferences!!.getString("cookie", null) == null) {
             binding.loginBtn.text = "登录账号"
+            binding.notifyarea.visibility= View.GONE
             binding.loginBtn.setOnClickListener {
                 resultContract.launch("")
+                initViews()
             }
         }
         SharePerferencesUtil.sharedPreferences?.getString("cookie", null)?.apply {
             binding.loginBtn.text = "登出账号"
+            binding.notifyarea.visibility= View.VISIBLE
             binding.loginBtn.setOnClickListener {
                 SharePerferencesUtil.sharedPreferences?.edit {
                     putString("cookie", null)
                 }
-                setUpLogin()
+                initViews()
             }
         }
     }

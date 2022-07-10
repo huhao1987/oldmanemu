@@ -3,24 +3,23 @@ package hh.app.oldmanemu.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.enums.PopupAnimation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.kongzue.dialogx.dialogs.FullScreenDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import hh.app.oldmanemu.CustomGlideImageGetter
 import hh.app.oldmanemu.GlideApp
-import hh.app.oldmanemu.PopupViews.CommentPopup
 import hh.app.oldmanemu.R
+import hh.app.oldmanemu.adapters.CommentListAdapter
 import hh.app.oldmanemu.databinding.ActivitySingleTopicBinding
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.viewmodels.SingleTopicViewModel
-import org.sufficientlysecure.htmltextview.DrawTableLinkSpan
-import org.sufficientlysecure.htmltextview.GlideImageGetter
-import org.sufficientlysecure.htmltextview.OnClickATagListener
 import org.sufficientlysecure.htmltextview.OnImageClickListener
+
 
 class SingleTopicActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySingleTopicBinding
@@ -57,11 +56,22 @@ class SingleTopicActivity : AppCompatActivity() {
                 list->
                 binding.comment.setOnClickListener {
                         view->
-                    XPopup.Builder(this)
-                        .popupAnimation(PopupAnimation.ScrollAlphaFromBottom)
-                        .isCenterHorizontal(true)
-                        .asCustom(CommentPopup(this,list))
-                        .show()
+//                    XPopup.Builder(this)
+//                        .hasShadowBg(false)
+//                        .isDarkTheme(true)
+//                        .popupAnimation(PopupAnimation.ScrollAlphaFromBottom)
+//                        .isCenterHorizontal(true)
+//                        .asCustom(CommentPopup(this,list))
+//                        .show()
+                    FullScreenDialog.show(object :
+                        OnBindView<FullScreenDialog?>(R.layout.popup_comment) {
+                        override fun onBind(dialog: FullScreenDialog?, v: View) {
+                            var commentList=v.findViewById<RecyclerView>(R.id.commentList)
+                            var commentListAdapter= CommentListAdapter(this@SingleTopicActivity,list)
+                            commentList.layoutManager= LinearLayoutManager(this@SingleTopicActivity)
+                            commentList.adapter=commentListAdapter
+                        }
+                    })
                 }
             }
 

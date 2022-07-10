@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    app:contentPadding="20dp"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="16dp"
+    app:rippleColor="@color/teal_200"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.google.android.material.card.MaterialCardView
-        android:orientation="vertical"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        app:contentPadding="20dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="16dp"
-        app:rippleColor="@color/teal_200"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
       <RelativeLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
@@ -65,5 +62,3 @@
 
       </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
-
-</LinearLayout>
