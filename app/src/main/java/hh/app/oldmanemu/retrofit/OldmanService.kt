@@ -13,6 +13,12 @@ interface OldmanService {
     @GET("/")
     fun getHomepage(): Call<ResponseBody>
 
+    @GET("/index-{index}.htm")
+    fun getMorepage(@Path("index")index:Int):Call<ResponseBody>
+
     @GET("{url}")
     fun getSinglepage(@Path("url")url:String):Call<ResponseBody>
+
+    @GET("{url}-{index}.htm")
+    fun getMoreCommentlist(@Path("url")url:String,@Path("index")index:Int):Call<ResponseBody>
 }

@@ -10,11 +10,9 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-
         app:contentPadding="20dp"
         app:cardElevation="8dp"
         app:cardCornerRadius="16dp"
-        app:rippleColor="@color/teal_200"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
       <RelativeLayout

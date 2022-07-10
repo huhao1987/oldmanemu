@@ -10,9 +10,9 @@ import hh.app.oldmanemu.beans.TopicBean
 import hh.app.oldmanemu.databinding.RowTopicBinding
 import hh.app.oldmanemu.retrofit.GetPespo
 
-class TopicListAdapter(var context:Context,var topiclist: ArrayList<TopicBean>, var onClickListener: onClickListener?=null):
+class TopicListAdapter(var context:Context,list: ArrayList<TopicBean>, var onClickListener: onClickListener?=null):
     RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
-
+    private var topiclist=list
     inner class ViewHolder(binding: RowTopicBinding) : RecyclerView.ViewHolder(binding.root) {
         val topicTitle=binding.topicTitle
         val posterAvatar=binding.posterAvatar
@@ -44,7 +44,10 @@ class TopicListAdapter(var context:Context,var topiclist: ArrayList<TopicBean>, 
         }
     }
     override fun getItemCount() = topiclist.size
-
+    fun UpdateList(topiclist: ArrayList<TopicBean>){
+        this.topiclist=ArrayList(this.topiclist+topiclist)
+        notifyDataSetChanged()
+    }
 }
 interface onClickListener{
     fun onclick(position: Int,topicBean: TopicBean)

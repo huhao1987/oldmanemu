@@ -52,6 +52,23 @@ class GetPespo {
                 })
         }
 
+        fun getMorePage(index:Int,callback: Callback<ResponseBody>) {
+            init()
+                .create(OldmanService::class.java)
+                .getMorepage(index)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        callback.onResponse(call, response)
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callback.onFailure(call, t)
+                    }
+                })
+        }
         fun getSinglePage(url:String,callback: Callback<ResponseBody>){
             init()
                 .create(OldmanService::class.java)
@@ -69,6 +86,22 @@ class GetPespo {
                     }
                 })
         }
+        fun getMoreCommentlist(url:String,index: Int,callback: Callback<ResponseBody>){
+            init()
+                .create(OldmanService::class.java)
+                .getSinglepage(url)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        callback.onResponse(call, response)
+                    }
 
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callback.onFailure(call, t)
+                    }
+                })
+        }
     }
 }

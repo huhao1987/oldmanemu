@@ -17,10 +17,10 @@ import retrofit2.Response
 
 class SingleTopicViewModel : ViewModel() {
     private val singletopicData = MutableLiveData<SingleTopicBean>()
-
-    fun getSingleTopic(url:String): MutableLiveData<SingleTopicBean>{
+    private var commentListData: MutableLiveData<ArrayList<CommentBean>>? = null
+    fun getSingleTopic(url: String): MutableLiveData<SingleTopicBean> {
         viewModelScope.launch {
-            GetPespo.getSinglePage(url,object : Callback<ResponseBody> {
+            GetPespo.getSinglePage(url, object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
@@ -37,44 +37,55 @@ class SingleTopicViewModel : ViewModel() {
 
                         var titleDetail = postContent.getElementsByClass("media").get(0)
                         //标题
-                        var title=titleDetail.getElementsByTag("h4").text()
+                        var title = titleDetail.getElementsByTag("h4").text()
                         //头像
-                        var avatar=titleDetail.getElementsByTag("img").attr("src")
+                        var avatar = titleDetail.getElementsByTag("img").attr("src")
                         //等级
-                        var level=titleDetail.getElementsByTag("i").text()
+                        var level = titleDetail.getElementsByTag("i").text()
                         //用户名
-                        var username=titleDetail.getElementsByClass("username").get(0).text()
+                        var username = titleDetail.getElementsByClass("username").get(0).text()
                         //发布时间
-                        var postTime=titleDetail.getElementsByClass("date text-grey ml-2").get(0).text()
+                        var postTime =
+                            titleDetail.getElementsByClass("date text-grey ml-2").get(0).text()
                         //内容
                         var content = postContent.getElementsByClass("message break-all").get(0)
-                        var user= User(userName = username,avatar=avatar,level=level)
+                        var user = User(userName = username, avatar = avatar, level = level)
                         //评论
-                        var commentDetail=document.getElementsByClass("card card-postlist").get(0)
-                        var commentTitle=commentDetail.getElementsByClass("card-title").get(0)
-                        var commentNum=commentTitle.getElementsByClass("posts").get(0).text()
-                        var commentListDetail=commentDetail.getElementsByClass("list-unstyled postlist")
-                        var commentList=ArrayList<CommentBean>()
-                        if(commentListDetail.isNotEmpty()) {
-                           var origincommentList= commentListDetail.get(0).getElementsByClass("media post")
+                        var commentDetail = document.getElementsByClass("card card-postlist").get(0)
+                        var commentTitle = commentDetail.getElementsByClass("card-title").get(0)
+                        var commentNum = commentTitle.getElementsByClass("posts").get(0).text()
+                        var commentListDetail =
+                            commentDetail.getElementsByClass("list-unstyled postlist")
+                        var commentList = ArrayList<CommentBean>()
+                        if (commentListDetail.isNotEmpty()) {
+                            var origincommentList =
+                                commentListDetail.get(0).getElementsByClass("media post")
                             origincommentList.forEach {
-                                var commentBean=CommentBean()
-                                commentBean.commentContent=
+                                var commentBean = CommentBean()
+                                commentBean.commentContent =
                                     it.getElementsByClass("message mt-1 break-all").get(0).html()
-                                var avatar=it.getElementsByTag("img").attr("src")
-                                var level=it.getElementsByClass("padding-bottom:0;margin-bottom:0;color:; ").text()
-                                var username=it.getElementsByClass("username").text()
-                                var link=it.getElementsByTag("a").attr("href")
-                                commentBean.user=User(avatar = avatar, level = level, userName = username, userLink = link)
+                                var avatar = it.getElementsByTag("img").attr("src")
+                                var level =
+                                    it.getElementsByClass("padding-bottom:0;margin-bottom:0;color:; ")
+                                        .text()
+                                var username = it.getElementsByClass("username").text()
+                                var link = it.getElementsByTag("a").attr("href")
+                                commentBean.user = User(
+                                    avatar = avatar,
+                                    level = level,
+                                    userName = username,
+                                    userLink = link
+                                )
                                 commentList.add(commentBean)
                             }
                         }
-                        var commentListBean=CommentListBean(commentNum=commentNum,commentList = commentList)
+                        var commentListBean =
+                            CommentListBean(commentNum = commentNum, commentList = commentList)
                         singletopicData.postValue(
                             SingleTopicBean(
                                 title = title,
                                 content = content.html(),
-                                user=user,
+                                user = user,
                                 postTime = postTime,
                                 commentDetail = commentListBean
                             )
@@ -89,4 +100,25 @@ class SingleTopicViewModel : ViewModel() {
         }
         return singletopicData
     }
+
+    fun getMoreComments(url: String,index:Int): MutableLiveData<ArrayList<CommentBean>> {
+        var finUrl=url.replace(".htm","")
+        commentListData = MutableLiveData<ArrayList<CommentBean>>()
+            viewModelScope.launch {
+                GetPespo.getMoreCommentlist(finUrl,index, object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+                })
+            }
+            return commentListData!!
+        }
+
 }

@@ -3,6 +3,7 @@ package hh.app.oldmanemu.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -11,6 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kongzue.dialogx.dialogs.FullScreenDialog
 import com.kongzue.dialogx.interfaces.OnBindView
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import hh.app.oldmanemu.CustomGlideImageGetter
 import hh.app.oldmanemu.GlideApp
 import hh.app.oldmanemu.R
@@ -56,16 +60,22 @@ class SingleTopicActivity : AppCompatActivity() {
                 list->
                 binding.comment.setOnClickListener {
                         view->
-//                    XPopup.Builder(this)
-//                        .hasShadowBg(false)
-//                        .isDarkTheme(true)
-//                        .popupAnimation(PopupAnimation.ScrollAlphaFromBottom)
-//                        .isCenterHorizontal(true)
-//                        .asCustom(CommentPopup(this,list))
-//                        .show()
                     FullScreenDialog.show(object :
                         OnBindView<FullScreenDialog?>(R.layout.popup_comment) {
                         override fun onBind(dialog: FullScreenDialog?, v: View) {
+                            v.findViewById<SmartRefreshLayout>(R.id.refreshLayout).let {
+                                it.setRefreshHeader(MaterialHeader(this@SingleTopicActivity))
+                                it.setRefreshFooter(ClassicsFooter(this@SingleTopicActivity))
+                                it.setOnRefreshListener{
+                                        refreshlayout->
+                                    loadHomepage(refreshlayout)
+                                }
+
+                                it.setOnLoadMoreListener {
+                                        refreshlayout->
+                                    loadmorepage(pageIndex,refreshlayout)
+                                }
+                            }
                             var commentList=v.findViewById<RecyclerView>(R.id.commentList)
                             var commentListAdapter= CommentListAdapter(this@SingleTopicActivity,list)
                             commentList.layoutManager= LinearLayoutManager(this@SingleTopicActivity)
@@ -74,7 +84,10 @@ class SingleTopicActivity : AppCompatActivity() {
                     })
                 }
             }
-
+            binding.topicContent.setOnClickATagListener { widget, spannedText, href ->
+                Log.d("thetag::",spannedText+" "+href)
+                true
+            }
             binding.topicContent.setHtml(it.content, CustomGlideImageGetter(binding.topicContent,true),object:OnImageClickListener{
                 override fun onClick(image: String?) {
                     startActivity(Intent(this@SingleTopicActivity,ImageViewActivity::class.java).also{
