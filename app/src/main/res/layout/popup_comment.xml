@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:aztec="http://schemas.android.com/tools">
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_above="@+id/commentarea">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentList"
@@ -18,4 +19,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    <RelativeLayout
+        android:id="@+id/commentarea"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/shortReply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/sendComment"
+            android:hint="@string/shortreply" />
+
+        <ImageView
+            android:id="@+id/sendComment"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/advanceEdit"
+            android:src="@drawable/ic_send" />
+        <ImageView
+            android:id="@+id/advanceEdit"
+            android:src="@drawable/ic_advance_edit"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="32dp"
+            android:layout_height="32dp"/>
+    </RelativeLayout>
 </RelativeLayout>

@@ -5,4 +5,5 @@
     <string name="notificationtext">你收到%1$s条论坛信息</string>
     <string name="notification_time">设置通知时长</string>
     <string name="ok">确定</string>
+    <string name="shortreply">快速回复</string>
 </resources>

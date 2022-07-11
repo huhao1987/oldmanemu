@@ -8,6 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.http.Field
 import java.util.*
 
 class GetPespo {
@@ -16,8 +17,8 @@ class GetPespo {
         var cookie = ""
         var retrofit: Retrofit? = null
 
-        fun init(cookie:String?=null):Retrofit {
-            if(retrofit==null) {
+        fun init(cookie: String? = null): Retrofit {
+            if (retrofit == null) {
                 val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 }
@@ -52,7 +53,7 @@ class GetPespo {
                 })
         }
 
-        fun getMorePage(index:Int,callback: Callback<ResponseBody>) {
+        fun getMorePage(index: Int, callback: Callback<ResponseBody>) {
             init()
                 .create(OldmanService::class.java)
                 .getMorepage(index)
@@ -69,7 +70,8 @@ class GetPespo {
                     }
                 })
         }
-        fun getSinglePage(url:String,callback: Callback<ResponseBody>){
+
+        fun getSinglePage(url: String, callback: Callback<ResponseBody>) {
             init()
                 .create(OldmanService::class.java)
                 .getSinglepage(url)
@@ -86,10 +88,35 @@ class GetPespo {
                     }
                 })
         }
-        fun getMoreCommentlist(url:String,index: Int,callback: Callback<ResponseBody>){
+
+        fun getMoreCommentlist(url: String, index: Int, callback: Callback<ResponseBody>) {
             init()
                 .create(OldmanService::class.java)
-                .getMoreCommentlist(url,index)
+                .getMoreCommentlist(url, index)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        callback.onResponse(call, response)
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callback.onFailure(call, t)
+                    }
+                })
+        }
+
+        fun postComment(
+            topicid: String,
+            message: String,
+            //引用评论的id
+            quotepid: String = "",
+            callback: Callback<ResponseBody>
+        ) {
+            init()
+                .create(OldmanService::class.java)
+                .postComment(topicid,message,quotepid)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,

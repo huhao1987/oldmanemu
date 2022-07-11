@@ -18,6 +18,8 @@ import retrofit2.Response
 class SingleTopicViewModel : ViewModel() {
     private val singletopicData = MutableLiveData<SingleTopicBean>()
     private var commentListData: MutableLiveData<ArrayList<CommentBean>>? = null
+    private var sendCommentData: MutableLiveData<Boolean>? = null
+
     fun getSingleTopic(url: String): MutableLiveData<SingleTopicBean> {
         viewModelScope.launch {
             GetPespo.getSinglePage(url, object : Callback<ResponseBody> {
@@ -168,4 +170,23 @@ class SingleTopicViewModel : ViewModel() {
             return commentListData!!
         }
 
+
+        fun postComment(topicid: String, message: String, quotepid: String = ""):MutableLiveData<Boolean>{
+            sendCommentData=MutableLiveData<Boolean>()
+            var finalMsg=message+"<p>&nbsp;</p><p> -<span style=\"color: rgb(0, 112, 192);\">-来自简陋的手机客户端</span></p>"
+            viewModelScope.launch {
+                GetPespo.postComment(topicid,finalMsg,quotepid,object:Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        sendCommentData?.postValue(true)
+                    }
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+                })
+            }
+            return sendCommentData!!
+        }
 }

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +25,14 @@ import hh.app.oldmanemu.beans.CommentBean
 import hh.app.oldmanemu.databinding.ActivitySingleTopicBinding
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.viewmodels.SingleTopicViewModel
+import org.sufficientlysecure.htmltextview.GlideImageGetter
 import org.sufficientlysecure.htmltextview.OnImageClickListener
+import org.wordpress.aztec.Aztec
+import org.wordpress.aztec.AztecText
+import org.wordpress.aztec.ITextFormat
+import org.wordpress.aztec.source.SourceViewEditText
+import org.wordpress.aztec.toolbar.AztecToolbar
+import org.wordpress.aztec.toolbar.IAztecToolbarClickListener
 
 
 class SingleTopicActivity : AppCompatActivity() {
@@ -90,6 +99,37 @@ class SingleTopicActivity : AppCompatActivity() {
         FullScreenDialog.show(object :
             OnBindView<FullScreenDialog?>(R.layout.popup_comment) {
             override fun onBind(dialog: FullScreenDialog?, v: View) {
+//                var visual=v.findViewById<AztecText>(R.id.visual)
+//                var formatting_toolbar=v.findViewById<AztecToolbar>(R.id.formatting_toolbar)
+//                var source=v.findViewById<SourceViewEditText>(R.id.source)
+//                Aztec.with(visual,source,formatting_toolbar,object:IAztecToolbarClickListener{
+//                    override fun onToolbarCollapseButtonClicked() {
+//
+//                    }
+//
+//                    override fun onToolbarExpandButtonClicked() {
+//                    }
+//
+//                    override fun onToolbarFormatButtonClicked(
+//                        format: ITextFormat,
+//                        isKeyboardShortcut: Boolean
+//                    ) {
+//                    }
+//
+//                    override fun onToolbarHeadingButtonClicked() {
+//                    }
+//
+//                    override fun onToolbarHtmlButtonClicked() {
+//                    }
+//
+//                    override fun onToolbarListButtonClicked() {
+//                    }
+//
+//                    override fun onToolbarMediaButtonClicked(): Boolean {
+//                        return false
+//                    }
+//                })
+
                 v.findViewById<SmartRefreshLayout>(R.id.refreshLayout).let {
 //                                it.setRefreshHeader(MaterialHeader(this@SingleTopicActivity))
                     if(commentpageNum>0) {
@@ -101,8 +141,21 @@ class SingleTopicActivity : AppCompatActivity() {
                 }
                 commentListAdapter= CommentListAdapter(this@SingleTopicActivity,list)
                 var commentList=v.findViewById<RecyclerView>(R.id.commentList)
-                commentList.layoutManager= LinearLayoutManager(this@SingleTopicActivity)
+                commentList.layoutManager= LinearLayoutManager(this@SingleTopicActivity).also {
+                    it.stackFromEnd=true
+                }
                 commentList.adapter=commentListAdapter
+                v.findViewById<ImageView>(R.id.sendComment).setOnClickListener {
+                    var text=v.findViewById<EditText>(R.id.shortReply).text.toString()
+                    var topicid=url.split("/").get(0).replace("thread-","").replace(".htm","")
+                    if(text.isNotBlank())
+                        viewModel.postComment(topicid,text).observe(this@SingleTopicActivity,{
+                            Toast.makeText(this@SingleTopicActivity,"评论成功",Toast.LENGTH_SHORT).show()
+                            dialog?.dismiss()
+                        })
+                    else
+                        Toast.makeText(this@SingleTopicActivity,"请输入评论",Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
