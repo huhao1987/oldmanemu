@@ -20,8 +20,9 @@ import hh.app.oldmanemu.retrofit.GetPespo
 import org.sufficientlysecure.htmltextview.OnClickATagListener
 import org.sufficientlysecure.htmltextview.OnImageClickListener
 
-class CommentListAdapter(var context:Context, var commentbeanList: ArrayList<CommentBean>, var onClickListener: onCommentClickListener?=null):
+class CommentListAdapter(var context:Context, commentbeanList: ArrayList<CommentBean>, var onClickListener: onCommentClickListener?=null):
     RecyclerView.Adapter<CommentListAdapter.ViewHolder>() {
+    private var commentbeanList=commentbeanList
 
     inner class ViewHolder(binding: RowCommentBinding) : RecyclerView.ViewHolder(binding.root) {
         val topicTitle=binding.topicTitle
@@ -71,6 +72,10 @@ class CommentListAdapter(var context:Context, var commentbeanList: ArrayList<Com
     }
     override fun getItemCount() = commentbeanList.size
 
+    fun UpdateList(commentbeanList: ArrayList<CommentBean>){
+        this.commentbeanList=ArrayList(this.commentbeanList+commentbeanList)
+        notifyDataSetChanged()
+    }
 }
 interface onCommentClickListener{
     fun onclick(position: Int,commentBean: CommentBean)

@@ -56,6 +56,12 @@ class SingleTopicViewModel : ViewModel() {
                         var commentNum = commentTitle.getElementsByClass("posts").get(0).text()
                         var commentListDetail =
                             commentDetail.getElementsByClass("list-unstyled postlist")
+                        var commentPage=0
+                        var commentPageData= document.getElementsByClass("pagination my-4 justify-content-center flex-wrap")
+                        if(commentPageData.isNotEmpty()) {
+                            var commentPages = commentPageData.get(0).getElementsByClass("page-item")
+                            commentPage=commentPages.get(commentPages.size-2).text().replace("...","").toInt()
+                        }
                         var commentList = ArrayList<CommentBean>()
                         if (commentListDetail.isNotEmpty()) {
                             var origincommentList =
@@ -87,7 +93,8 @@ class SingleTopicViewModel : ViewModel() {
                                 content = content.html(),
                                 user = user,
                                 postTime = postTime,
-                                commentDetail = commentListBean
+                                commentDetail = commentListBean,
+                                commentPage =commentPage
                             )
                         )
                     }
@@ -110,7 +117,47 @@ class SingleTopicViewModel : ViewModel() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-
+                        response.body()?.apply {
+                            var htmlStr = this.string()
+                            var document = Jsoup.parse(htmlStr)
+                            var commentDetail =
+                                document.getElementsByClass("card card-postlist").get(0)
+                            var commentTitle = commentDetail.getElementsByClass("card-title").get(0)
+                            var commentNum = commentTitle.getElementsByClass("posts").get(0).text()
+                            var commentListDetail =
+                                commentDetail.getElementsByClass("list-unstyled postlist")
+                            var commentPage=0
+                            var commentPageData= document.getElementsByClass("pagination my-4 justify-content-center flex-wrap")
+                            if(commentPageData.isNotEmpty()) {
+                                var commentPages = commentPageData.get(0).getElementsByClass("page-item")
+                                commentPage=commentPages.get(commentPages.size-2).text().replace("...","").toInt()
+                            }
+                            var commentList = ArrayList<CommentBean>()
+                            if (commentListDetail.isNotEmpty()) {
+                                var origincommentList =
+                                    commentListDetail.get(0).getElementsByClass("media post")
+                                origincommentList.forEach {
+                                    var commentBean = CommentBean()
+                                    commentBean.commentContent =
+                                        it.getElementsByClass("message mt-1 break-all").get(0)
+                                            .html()
+                                    var avatar = it.getElementsByTag("img").attr("src")
+                                    var level =
+                                        it.getElementsByClass("padding-bottom:0;margin-bottom:0;color:; ")
+                                            .text()
+                                    var username = it.getElementsByClass("username").text()
+                                    var link = it.getElementsByTag("a").attr("href")
+                                    commentBean.user = User(
+                                        avatar = avatar,
+                                        level = level,
+                                        userName = username,
+                                        userLink = link
+                                    )
+                                    commentList.add(commentBean)
+                                }
+                                commentListData?.postValue(commentList)
+                            }
+                        }
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

@@ -6,5 +6,6 @@ data class SingleTopicBean(
     var postTime:String,
     var categories:ArrayList<String>?=ArrayList<String>(),
     var content:String,
+    var commentPage:Int,
     var commentDetail:CommentListBean
 )

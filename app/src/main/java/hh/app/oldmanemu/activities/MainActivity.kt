@@ -2,7 +2,6 @@ package hh.app.oldmanemu.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.api.RefreshLayout
-import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener
 import hh.app.oldmanemu.GlideApp
 import hh.app.oldmanemu.NotifyWorker
 import hh.app.oldmanemu.Utils.SharePerferencesUtil
@@ -28,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels<MainViewModel>()
     private var adapter: TopicListAdapter? = null
     private var pageIndex=1
+    private var pageNum=0
     private var resultContract = registerForActivityResult(LoginActivityResultContract()) {
         if (it.contains("bbs_token")) {
             SharePerferencesUtil.sharedPreferences?.edit {
@@ -57,25 +56,21 @@ class MainActivity : AppCompatActivity() {
                 refreshlayout->
                     loadHomepage(refreshlayout)
             }
-
             it.setOnLoadMoreListener {
                 refreshlayout->
                 loadmorepage(pageIndex,refreshlayout)
             }
         }
+        binding.notifyarea.setOnClickListener {
+            startActivity(Intent(this,NotificationSettingActivity::class.java))
+        }
     }
 
-    private fun loadmorepage(pageIndex:Int,refreshLayout: RefreshLayout?=null){
-        viewModel.getMoreData(pageIndex).observe(this,{
-                this.pageIndex++
-                adapter?.UpdateList(it)
-                refreshLayout?.finishLoadMore(true)
-        })
-    }
     private fun loadHomepage(refreshLayout: RefreshLayout?=null){
         pageIndex=1
         viewModel.getHomePageData().observe(this, {
             pageIndex++
+            pageNum=it.endPage
             GlideApp.with(this)
                 .load(GetPespo.baseUrl + it.userInfo?.avatar)
                 .into(binding.userAvatar)
@@ -97,6 +92,21 @@ class MainActivity : AppCompatActivity() {
             binding.topicList.layoutManager = LinearLayoutManager(this)
             binding.topicList.adapter = adapter
             refreshLayout?.finishRefresh(true)
+        })
+    }
+
+    private fun loadmorepage(pageIndex:Int,refreshLayout: RefreshLayout?=null){
+        viewModel.getMoreData(pageIndex).observe(this,{
+            if(pageIndex<pageNum) {
+                this.pageIndex++
+                adapter?.UpdateList(it)
+                refreshLayout?.finishLoadMore(true)
+            }
+            else {
+                refreshLayout?.finishLoadMore(true)
+                refreshLayout?.setEnableLoadMore(false)
+            }
+
         })
     }
 

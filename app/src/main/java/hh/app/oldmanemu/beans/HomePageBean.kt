@@ -10,5 +10,5 @@ data class HomePageBean(
     var notifyNum:Int=0,
     var alert:String="",
     var topicList:ArrayList<TopicBean>?=ArrayList(),
-    var endPage:String=""
+    var endPage:Int=0
 )

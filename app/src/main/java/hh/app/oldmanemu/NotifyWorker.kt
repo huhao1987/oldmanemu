@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 
 class NotifyWorker(var cont:Context,workerParameters: WorkerParameters):Worker(cont,workerParameters) {
     companion object{
-        fun SetupNotifyWorker(context: Context,cookie:String?,duration:Long=10,timeUnit: TimeUnit=TimeUnit.MINUTES){
+        fun SetupNotifyWorker(context: Context,cookie:String?,duration:Long=15,timeUnit: TimeUnit=TimeUnit.MINUTES){
             WorkManager.getInstance(context).cancelAllWorkByTag("oldmannotify")
             var cookiedata= workDataOf("cookie" to cookie)
             var notifyWorkRequest= OneTimeWorkRequestBuilder<NotifyWorker>()

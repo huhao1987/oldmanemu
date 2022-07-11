@@ -3,4 +3,6 @@
     <string name="notifationdes">oldmanemu notification</string>
     <string name="notificationtitle">老男人游戏网</string>
     <string name="notificationtext">你收到%1$s条论坛信息</string>
+    <string name="notification_time">设置通知时长</string>
+    <string name="ok">确定</string>
 </resources>

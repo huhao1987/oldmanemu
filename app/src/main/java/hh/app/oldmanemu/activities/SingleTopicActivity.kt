@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kongzue.dialogx.dialogs.FullScreenDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.scwang.smart.refresh.footer.ClassicsFooter
-import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import hh.app.oldmanemu.CustomGlideImageGetter
 import hh.app.oldmanemu.GlideApp
 import hh.app.oldmanemu.R
 import hh.app.oldmanemu.adapters.CommentListAdapter
+import hh.app.oldmanemu.beans.CommentBean
 import hh.app.oldmanemu.databinding.ActivitySingleTopicBinding
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.viewmodels.SingleTopicViewModel
@@ -28,6 +29,9 @@ import org.sufficientlysecure.htmltextview.OnImageClickListener
 class SingleTopicActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySingleTopicBinding
     private val viewModel:SingleTopicViewModel by viewModels<SingleTopicViewModel>()
+    private var commentpageNum=0
+    private var commentIndex=2
+    private var commentListAdapter:CommentListAdapter?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingleTopicBinding.inflate(layoutInflater)
@@ -55,33 +59,13 @@ class SingleTopicActivity : AppCompatActivity() {
                 .into(binding.posterAvatar)
             binding.posterDetail.text=it.user.level
             binding.postTime.text=it.postTime
+            commentpageNum=it.commentPage
             binding.comment.text="评论 ${it.commentDetail.commentNum}"
             it.commentDetail.commentList?.let {
                 list->
                 binding.comment.setOnClickListener {
                         view->
-                    FullScreenDialog.show(object :
-                        OnBindView<FullScreenDialog?>(R.layout.popup_comment) {
-                        override fun onBind(dialog: FullScreenDialog?, v: View) {
-                            v.findViewById<SmartRefreshLayout>(R.id.refreshLayout).let {
-                                it.setRefreshHeader(MaterialHeader(this@SingleTopicActivity))
-                                it.setRefreshFooter(ClassicsFooter(this@SingleTopicActivity))
-                                it.setOnRefreshListener{
-                                        refreshlayout->
-                                    loadHomepage(refreshlayout)
-                                }
-
-                                it.setOnLoadMoreListener {
-                                        refreshlayout->
-                                    loadmorepage(pageIndex,refreshlayout)
-                                }
-                            }
-                            var commentList=v.findViewById<RecyclerView>(R.id.commentList)
-                            var commentListAdapter= CommentListAdapter(this@SingleTopicActivity,list)
-                            commentList.layoutManager= LinearLayoutManager(this@SingleTopicActivity)
-                            commentList.adapter=commentListAdapter
-                        }
-                    })
+                        setUpCommentView(url,list)
                 }
             }
             binding.topicContent.setOnClickATagListener { widget, spannedText, href ->
@@ -100,5 +84,38 @@ class SingleTopicActivity : AppCompatActivity() {
             Toast.makeText(this,"异常错误，请重试",Toast.LENGTH_SHORT).show()
             finish()
         }
+    }
+
+    private fun setUpCommentView(url:String,list:ArrayList<CommentBean>){
+        FullScreenDialog.show(object :
+            OnBindView<FullScreenDialog?>(R.layout.popup_comment) {
+            override fun onBind(dialog: FullScreenDialog?, v: View) {
+                v.findViewById<SmartRefreshLayout>(R.id.refreshLayout).let {
+//                                it.setRefreshHeader(MaterialHeader(this@SingleTopicActivity))
+                    if(commentpageNum>0) {
+                        it.setRefreshFooter(ClassicsFooter(this@SingleTopicActivity))
+                        it.setOnLoadMoreListener { refreshlayout ->
+                            loadMoreComments(it, url, commentIndex, refreshlayout)
+                        }
+                    }
+                }
+                commentListAdapter= CommentListAdapter(this@SingleTopicActivity,list)
+                var commentList=v.findViewById<RecyclerView>(R.id.commentList)
+                commentList.layoutManager= LinearLayoutManager(this@SingleTopicActivity)
+                commentList.adapter=commentListAdapter
+            }
+        })
+    }
+
+    private fun loadMoreComments(smartRefreshLayout: SmartRefreshLayout,url: String,index:Int,refreshLayout: RefreshLayout){
+        viewModel.getMoreComments(url,index).observe(this,{
+            commentListAdapter?.UpdateList(it)
+            if(commentpageNum<=commentIndex){
+                smartRefreshLayout.setEnableLoadMore(false)
+            }
+            else
+            commentIndex++
+            refreshLayout.finishLoadMore(true)
+        })
     }
 }

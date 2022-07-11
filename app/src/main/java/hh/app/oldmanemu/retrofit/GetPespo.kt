@@ -89,7 +89,7 @@ class GetPespo {
         fun getMoreCommentlist(url:String,index: Int,callback: Callback<ResponseBody>){
             init()
                 .create(OldmanService::class.java)
-                .getSinglepage(url)
+                .getMoreCommentlist(url,index)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,

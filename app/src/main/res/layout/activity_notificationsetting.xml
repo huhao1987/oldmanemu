@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.NotificationSettingActivity">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/notifySwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="开启通知" />
+<TextView
+    android:id="@+id/notifyTimeText"
+    android:text="@string/notification_time"
+    android:layout_below="@+id/notifySwitch"
+    android:layout_centerHorizontal="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+   <EditText
+       android:id="@+id/notification_timepicker"
+       android:layout_below="@+id/notifyTimeText"
+       android:layout_centerHorizontal="true"
+       android:inputType="number"
+       android:hint="15"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"/>
+    <Spinner
+        android:id="@+id/timeSpinner"
+        android:entries="@array/timePicker"
+        android:spinnerMode="dropdown"
+        android:layout_marginTop="10dp"
+        android:layout_alignTop="@+id/notification_timepicker"
+        android:layout_toRightOf="@+id/notification_timepicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/saveBtn"
+        android:layout_below="@+id/timeSpinner"
+        android:layout_centerHorizontal="true"
+        android:text="@string/ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

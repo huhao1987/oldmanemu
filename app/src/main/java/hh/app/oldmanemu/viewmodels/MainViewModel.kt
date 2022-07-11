@@ -132,7 +132,7 @@ class MainViewModel : ViewModel() {
                                     //Page index
                                     var basePage = document.getElementsByClass("page-item")
                                     homePageBean.endPage =
-                                        basePage[basePage.size - 2].text().replace("...", "")
+                                        basePage[basePage.size - 2].text().replace("...", "").toInt()
                                     homePageData.postValue(homePageBean)
                                 }
                             }
