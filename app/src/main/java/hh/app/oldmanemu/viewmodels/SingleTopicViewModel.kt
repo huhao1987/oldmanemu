@@ -70,6 +70,7 @@ class SingleTopicViewModel : ViewModel() {
                                 commentListDetail.get(0).getElementsByClass("media post")
                             origincommentList.forEach {
                                 var commentBean = CommentBean()
+                                commentBean.quoteid=it.attr("data-pid")
                                 commentBean.commentContent =
                                     it.getElementsByClass("message mt-1 break-all").get(0).html()
                                 var avatar = it.getElementsByTag("img").attr("src")
@@ -140,6 +141,7 @@ class SingleTopicViewModel : ViewModel() {
                                     commentListDetail.get(0).getElementsByClass("media post")
                                 origincommentList.forEach {
                                     var commentBean = CommentBean()
+                                    commentBean.quoteid=it.attr("data-pid")
                                     commentBean.commentContent =
                                         it.getElementsByClass("message mt-1 break-all").get(0)
                                             .html()
@@ -170,10 +172,10 @@ class SingleTopicViewModel : ViewModel() {
             return commentListData!!
         }
 
-
         fun postComment(topicid: String, message: String, quotepid: String = ""):MutableLiveData<Boolean>{
             sendCommentData=MutableLiveData<Boolean>()
-            var finalMsg=message+"<p>&nbsp;</p><p> -<span style=\"color: rgb(0, 112, 192);\">-来自简陋的手机客户端</span></p>"
+            var finalMsg=message
+//            +"<p>&nbsp;</p><p> -<span style=\"color: rgb(0, 112, 192);\">-来自简陋的手机客户端</span></p>"
             viewModelScope.launch {
                 GetPespo.postComment(topicid,finalMsg,quotepid,object:Callback<ResponseBody>{
                     override fun onResponse(

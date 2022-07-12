@@ -36,6 +36,12 @@
               android:layout_alignTop="@+id/poster"
               android:layout_marginLeft="5dp"
               android:layout_toRightOf="@+id/poster" />
+          <ImageView
+              android:id="@+id/replyBtn"
+              android:layout_alignParentRight="true"
+              android:src="@drawable/ic_baseline_reply_24"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
           <TextView
               android:id="@+id/replyNum"
               android:layout_below="@+id/replyDetail"
@@ -53,6 +59,7 @@
               android:layout_toRightOf="@+id/replyNum"/>
           <org.sufficientlysecure.htmltextview.HtmlTextView
               android:id="@+id/topicTitle"
+              android:textIsSelectable="true"
               android:layout_below="@+id/posterAvatar"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

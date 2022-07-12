@@ -8,7 +8,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/commentarea">
+        android:layout_above="@+id/replyArea">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentList"
@@ -19,12 +19,66 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/replyArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/commentarea"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/quoteopen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/quoteopen" />
+        <RelativeLayout
+            android:id="@+id/replyText"
+            android:layout_toLeftOf="@+id/quoteclose"
+            android:layout_toRightOf="@+id/quoteopen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/replyAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/replyPoster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/replyAvatar"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/replyAvatar" />
+
+
+        <org.sufficientlysecure.htmltextview.HtmlTextView
+            android:id="@+id/replyTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/replyAvatar"
+            android:textIsSelectable="true"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/quoteclose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/replyText"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/quoteclose" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/commentarea"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/shortReply"
             android:layout_width="match_parent"

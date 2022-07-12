@@ -20,7 +20,7 @@ import hh.app.oldmanemu.retrofit.GetPespo
 import org.sufficientlysecure.htmltextview.OnClickATagListener
 import org.sufficientlysecure.htmltextview.OnImageClickListener
 
-class CommentListAdapter(var context:Context, commentbeanList: ArrayList<CommentBean>, var onClickListener: onCommentClickListener?=null):
+class CommentListAdapter(var context:Context, commentbeanList: ArrayList<CommentBean>, var onReplyListener: onReplyListener?=null):
     RecyclerView.Adapter<CommentListAdapter.ViewHolder>() {
     private var commentbeanList=commentbeanList
 
@@ -31,6 +31,7 @@ class CommentListAdapter(var context:Context, commentbeanList: ArrayList<Comment
         val replyNum=binding.replyNum
         val favNum=binding.favNum
         val replyDetail=binding.replyDetail
+        val replyBtn=binding.replyBtn
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,6 +43,7 @@ class CommentListAdapter(var context:Context, commentbeanList: ArrayList<Comment
         var comment=commentbeanList[position]
         holder.topicTitle.blockQuoteBackgroundColor=context.resources.getColor(R.color.lightgray)
         holder.topicTitle.blockQuoteStripColor=context.resources.getColor(R.color.lightgray)
+
         holder.topicTitle.setOnClickATagListener(object:OnClickATagListener{
             override fun onClick(widget: View?, spannedText: String?, href: String?): Boolean {
                 Log.d("thetag:::",spannedText+" "+href)
@@ -65,9 +67,8 @@ class CommentListAdapter(var context:Context, commentbeanList: ArrayList<Comment
 //        holder.favNum.text="点赞数:"+comment.favNum
 //        holder.replyNum.text="回复数:"+comment.replyNum
         holder.replyDetail.text=comment.user?.level
-
-        holder.itemView.setOnClickListener {
-            onClickListener?.onclick(position,comment)
+        holder.replyBtn.setOnClickListener {
+            onReplyListener?.onclick(position,comment)
         }
     }
     override fun getItemCount() = commentbeanList.size
@@ -77,6 +78,6 @@ class CommentListAdapter(var context:Context, commentbeanList: ArrayList<Comment
         notifyDataSetChanged()
     }
 }
-interface onCommentClickListener{
+interface onReplyListener{
     fun onclick(position: Int,commentBean: CommentBean)
 }
