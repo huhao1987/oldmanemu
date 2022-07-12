@@ -9,18 +9,24 @@ import retrofit2.http.*
  * @author Hao
  */
 interface OldmanService {
+
+    //Home page
     @GET("/")
     fun getHomepage(): Call<ResponseBody>
 
+    //More pages
     @GET("/index-{index}.htm")
     fun getMorepage(@Path("index") index: Int): Call<ResponseBody>
 
+    //Single page
     @GET("{url}")
     fun getSinglepage(@Path("url") url: String): Call<ResponseBody>
 
+    //more comment
     @GET("{url}-{index}.htm")
     fun getMoreCommentlist(@Path("url") url: String, @Path("index") index: Int): Call<ResponseBody>
 
+    //Post comment
     @FormUrlEncoded
     @POST("/post-create-{topicid}-0.htm")
     fun postComment(
@@ -29,5 +35,9 @@ interface OldmanService {
         @Field("quotepid") quotepid: String="",
         @Field("doctype") doctype: Int = 0
     ): Call<ResponseBody>
+
+    //get notification
+    @GET("/my-notice.htm")
+    fun getNotification():Call<ResponseBody>
 
 }

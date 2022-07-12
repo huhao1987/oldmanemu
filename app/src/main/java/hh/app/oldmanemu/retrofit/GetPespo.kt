@@ -130,5 +130,23 @@ class GetPespo {
                     }
                 })
         }
+
+        fun getNotification(callback: Callback<ResponseBody>){
+            init()
+                .create(OldmanService::class.java)
+                .getNotification()
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        callback.onResponse(call, response)
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callback.onFailure(call, t)
+                    }
+                })
+        }
     }
 }

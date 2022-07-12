@@ -43,20 +43,32 @@ class NotifyWorker(var cont: Context, workerParameters: WorkerParameters) :
 
     override fun doWork(): Result {
         var cookie = inputData.getString("cookie")
-
+        var unreadNum=0
         GetPespo
             .init(cookie)
             .create(OldmanService::class.java)
-            .getHomepage()
-            .execute()
+            .getNotification().execute()
             .body()?.apply {
                 Jsoup.parse(string()).apply {
-                    getElementsByClass("d-none unread badge badge-danger badge-pill").let {
-                        if (it.isNotEmpty())
-                            CreateNotification(it.get(0).text())
+                    getElementsByClass("notice media text-small ").forEach {
+                        var unReads=it.getElementsByClass("readbtn btn btn-small btn-light ml-2 text-muted")
+                        if(unReads.isNotEmpty())
+                        unreadNum++
                     }
+                    if(unreadNum>0)
+                        CreateNotification(unreadNum.toString())
                 }
             }
+//            .getHomepage()
+//            .execute()
+//            .body()?.apply {
+//                Jsoup.parse(string()).apply {
+//                    getElementsByClass("d-none unread badge badge-danger badge-pill").let {
+//                        if (it.isNotEmpty())
+//                            CreateNotification(it.get(0).text())
+//                    }
+//                }
+//            }
         SetupNotifyWorker(cont, cookie)
         return Result.success()
     }
