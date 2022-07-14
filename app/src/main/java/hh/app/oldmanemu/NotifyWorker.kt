@@ -14,6 +14,7 @@ import com.blankj.utilcode.util.AppUtils
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kongzue.dialogx.interfaces.DialogXStyle
 import hh.app.oldmanemu.activities.MainActivity
+import hh.app.oldmanemu.activities.NotificationActivity
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.retrofit.OldmanService
 import okhttp3.ResponseBody
@@ -67,6 +68,11 @@ class NotifyWorker(var cont: Context, workerParameters: WorkerParameters) :
                                 cont.getString(R.string.notificationtext, "2")
                             ).also {
                                 it.align = DialogXStyle.PopTipSettings.ALIGN.TOP
+                            }.setOnPopTipClickListener { baseDialog, v ->
+                                applicationContext.startActivity(Intent(applicationContext, NotificationActivity::class.java).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                })
+                                false
                             }
                     }
                 }
