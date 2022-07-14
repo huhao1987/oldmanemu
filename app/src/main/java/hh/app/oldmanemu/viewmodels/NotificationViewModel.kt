@@ -33,14 +33,14 @@ class NotificationViewModel: ViewModel() {
                             it.getElementsByClass("notice media text-small ").forEach {
                                 var notificationBean=NotificationBean()
                                 notificationBean.dataid=it.attr("data-nid")
-                                notificationBean.NotifyContent=it.getElementsByClass("message break-all mt-1").get(0).html()
+                                notificationBean.NotifyContent=it.getElementsByClass("message break-all mt-1").getOrNull(0)?.html()?:""
                                 notificationList.add(notificationBean)
                                 var user=User()
-                                var userData=it.getElementsByClass("ml-1 mt-1 mr-3").get(0)
-                                user.userLink=userData.getElementsByTag("a").attr("href")
-                                user.avatar=userData.getElementsByTag("img").attr("src")
-                                user.userName=it.getElementsByClass("username text-grey font-weight-bold mr-1").get(0).text()
-                                user.postTime=it.getElementsByClass("date text-grey").get(0).text()
+                                var userData=it.getElementsByClass("ml-1 mt-1 mr-3").getOrNull(0)
+                                user.userLink=userData?.getElementsByTag("a")?.attr("href")?:""
+                                user.avatar=userData?.getElementsByTag("img")?.attr("src")?:""
+                                user.userName=it.getElementsByClass("username text-grey font-weight-bold mr-1").getOrNull(0)?.text()?:""
+                                user.postTime=it.getElementsByClass("date text-grey").getOrNull(0)?.text()?:""
                                 notificationBean.user=user
                             }
                             notificatonPageBean.notificationList=notificationList
