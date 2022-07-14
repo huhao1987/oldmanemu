@@ -40,4 +40,12 @@ interface OldmanService {
     @GET("/my-notice.htm")
     fun getNotification():Call<ResponseBody>
 
+    @FormUrlEncoded
+    @POST("/my-notice.htm")
+    fun postRead(
+        @Field("nid") nid: String,
+        @Field("act") act: String="readone"
+        ): Call<ResponseBody>
+
+
 }

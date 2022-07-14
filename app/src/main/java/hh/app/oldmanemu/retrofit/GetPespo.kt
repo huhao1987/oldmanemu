@@ -131,6 +131,27 @@ class GetPespo {
                 })
         }
 
+        fun postRead(
+            nid:String,
+            act:String="readone",
+            callback: Callback<ResponseBody>
+        ) {
+            init()
+                .create(OldmanService::class.java)
+                .postRead(nid,act)
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        callback.onResponse(call, response)
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callback.onFailure(call, t)
+                    }
+                })
+        }
         fun getNotification(callback: Callback<ResponseBody>){
             init()
                 .create(OldmanService::class.java)

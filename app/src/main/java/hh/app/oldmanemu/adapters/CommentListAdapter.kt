@@ -63,10 +63,11 @@ class CommentListAdapter(var context:Context, commentbeanList: ArrayList<Comment
             .load(GetPespo.baseUrl+comment.user?.avatar)
             .into(holder.posterAvatar)
 
-        holder.poster.text=comment.user?.userName
+        holder.poster.text=comment.user?.level+ " "+comment.user?.userName
 //        holder.favNum.text="点赞数:"+comment.favNum
 //        holder.replyNum.text="回复数:"+comment.replyNum
-        holder.replyDetail.text=comment.user?.level
+        holder.replyDetail.text=comment.postTime
+        holder.favNum.text=comment.likeNum.toString()
         holder.replyBtn.setOnClickListener {
             onReplyListener?.onclick(position,comment)
         }

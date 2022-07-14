@@ -41,7 +41,8 @@ class SingleTopicActivity : AppCompatActivity() {
     private var commentpageNum = 0
     private var commentIndex = 2
     private var commentListAdapter: CommentListAdapter? = null
-    private var quoteId:String=""
+    private var quoteId: String = ""
+    private var commentJumpId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingleTopicBinding.inflate(layoutInflater)
@@ -49,7 +50,7 @@ class SingleTopicActivity : AppCompatActivity() {
         initViews()
     }
 
-    private fun initViews(){
+    private fun initViews() {
         binding.topicContent.let { textView ->
             val metrics = DisplayMetrics()
             windowManager.defaultDisplay.getMetrics(metrics)
@@ -60,8 +61,15 @@ class SingleTopicActivity : AppCompatActivity() {
 
         }
         var url = intent.getStringExtra("url")
-        if (url != null)
-            viewModel.getSingleTopic(url).observe(this, {
+        if (url != null) {
+            if (url!!.contains("#"))
+                commentJumpId = url.split("#").get(1)
+
+            viewModel.singletopicError.observe(this,{
+                Toast.makeText(this,it,Toast.LENGTH_LONG).show()
+                finish()
+            })
+            viewModel.getSingleTopic(url.replace("%23", "#")).observe(this, {
                 binding.topicTitle.text = it.title
                 binding.backBtn.setOnClickListener {
                     onBackPressed()
@@ -75,6 +83,8 @@ class SingleTopicActivity : AppCompatActivity() {
                 commentpageNum = it.commentPage
                 binding.comment.text = "评论 ${it.commentDetail.commentNum}"
                 it.commentDetail.commentList?.let { list ->
+                    if(commentJumpId!="")
+                        setUpCommentView(url,list)
                     binding.comment.setOnClickListener { view ->
                         setUpCommentView(url, list)
                     }
@@ -97,17 +107,23 @@ class SingleTopicActivity : AppCompatActivity() {
                                 })
                         }
                     })
+
             })
-        else {
+        } else {
             Toast.makeText(this, "异常错误，请重试", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
+
+
+    /**
+     * 显示评论列表
+     */
     private fun setUpCommentView(url: String, list: ArrayList<CommentBean>) {
         FullScreenDialog.show(object :
             OnBindView<FullScreenDialog?>(R.layout.popup_comment) {
             override fun onBind(dialog: FullScreenDialog?, v: View) {
-                v.findViewById<RelativeLayout>(R.id.replyArea).visibility=View.GONE
+                v.findViewById<RelativeLayout>(R.id.replyArea).visibility = View.GONE
                 v.findViewById<SmartRefreshLayout>(R.id.refreshLayout).let {
 //                                it.setRefreshHeader(MaterialHeader(this@SingleTopicActivity))
                     if (commentpageNum > 0) {
@@ -117,34 +133,54 @@ class SingleTopicActivity : AppCompatActivity() {
                         }
                     }
                 }
-                commentListAdapter = CommentListAdapter(this@SingleTopicActivity, list,object:onReplyListener{
-                    override fun onclick(position: Int, commentBean: CommentBean) {
-                        v.findViewById<RelativeLayout>(R.id.replyArea).visibility=View.VISIBLE
-                        GlideApp.with(v)
-                            .load(GetPespo.baseUrl+commentBean.user?.avatar)
-                            .into(v.findViewById<ImageView>(R.id.replyAvatar))
-                        v.findViewById<TextView>(R.id.replyPoster).text=commentBean.user?.userName
-                        quoteId=commentBean.quoteid
-                        v.findViewById<HtmlTextView>(R.id.replyTitle).apply {
-                            blockQuoteBackgroundColor=context.resources.getColor(R.color.lightgray)
-                            blockQuoteStripColor=context.resources.getColor(R.color.lightgray)
-                            setHtml(commentBean.commentContent, CustomGlideImageGetter(v.findViewById<HtmlTextView>(R.id.topicTitle),true),null)
+                commentListAdapter =
+                    CommentListAdapter(this@SingleTopicActivity, list, object : onReplyListener {
+                        override fun onclick(position: Int, commentBean: CommentBean) {
+                            v.findViewById<RelativeLayout>(R.id.replyArea).visibility = View.VISIBLE
+                            GlideApp.with(v)
+                                .load(GetPespo.baseUrl + commentBean.user?.avatar)
+                                .into(v.findViewById<ImageView>(R.id.replyAvatar))
+                            v.findViewById<TextView>(R.id.replyPoster).text =
+                                commentBean.user?.userName
+                            quoteId = commentBean.quoteid
+                            v.findViewById<HtmlTextView>(R.id.replyTitle).apply {
+                                blockQuoteBackgroundColor =
+                                    context.resources.getColor(R.color.lightgray)
+                                blockQuoteStripColor = context.resources.getColor(R.color.lightgray)
+                                setHtml(
+                                    commentBean.commentContent,
+                                    CustomGlideImageGetter(
+                                        v.findViewById<HtmlTextView>(R.id.topicTitle),
+                                        true
+                                    ),
+                                    null
+                                )
+                            }
                         }
-                    }
-                })
+                    })
                 var commentList = v.findViewById<RecyclerView>(R.id.commentList)
                 commentList.layoutManager = LinearLayoutManager(this@SingleTopicActivity)
                 commentList.adapter = commentListAdapter
+                if (commentJumpId != "") {
+                    var commentjump = list.filter {
+                        it.quoteid.equals(commentJumpId)
+                    }
+                    if (commentjump.isNullOrEmpty()) {
+                        var index=list.indexOf(commentjump.get(0))
+                        commentList.scrollToPosition(index)
+                    }
+                }
                 v.findViewById<ImageView>(R.id.sendComment).setOnClickListener {
                     var text = v.findViewById<EditText>(R.id.shortReply).text.toString()
                     var topicid = url.split("/").get(0).replace("thread-", "").replace(".htm", "")
                     if (text.isNotBlank())
-                        viewModel.postComment(topicid, text,quoteId).observe(this@SingleTopicActivity, {
-                            Toast.makeText(this@SingleTopicActivity, "评论成功", Toast.LENGTH_SHORT)
-                                .show()
-                            dialog?.dismiss()
-                            initViews()
-                        })
+                        viewModel.postComment(topicid, text, quoteId)
+                            .observe(this@SingleTopicActivity, {
+                                Toast.makeText(this@SingleTopicActivity, "评论成功", Toast.LENGTH_SHORT)
+                                    .show()
+                                dialog?.dismiss()
+                                initViews()
+                            })
                     else
                         Toast.makeText(this@SingleTopicActivity, "请输入评论", Toast.LENGTH_SHORT).show()
                 }
@@ -152,6 +188,9 @@ class SingleTopicActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * 读取更多列表
+     */
     private fun loadMoreComments(
         smartRefreshLayout: SmartRefreshLayout,
         url: String,

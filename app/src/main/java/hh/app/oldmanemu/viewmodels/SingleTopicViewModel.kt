@@ -19,7 +19,7 @@ class SingleTopicViewModel : ViewModel() {
     private val singletopicData = MutableLiveData<SingleTopicBean>()
     private var commentListData: MutableLiveData<ArrayList<CommentBean>>? = null
     private var sendCommentData: MutableLiveData<Boolean>? = null
-
+    var singletopicError=MutableLiveData<String>()
     fun getSingleTopic(url: String): MutableLiveData<SingleTopicBean> {
         viewModelScope.launch {
             GetPespo.getSinglePage(url, object : Callback<ResponseBody> {
@@ -31,75 +31,91 @@ class SingleTopicViewModel : ViewModel() {
                         var htmlStr = this.string()
                         var document = Jsoup.parse(htmlStr)
                         //分类列表
-                        var categriesData =
-                            document.getElementsByClass("breadcrumb d-none d-md-flex").get(0)
-                        var categrieslist = categriesData.getElementsByClass("breadcrumb-item")
+//                        var categriesData =
+//                            document.getElementsByClass("breadcrumb d-none d-md-flex").get(0)
+//                        var categrieslist = categriesData.getElementsByClass("breadcrumb-item")
                         //整体发布内容
-                        var postContent = document.getElementsByClass("card card-thread").get(0)
+                        var postContent = document.getElementsByClass("card-body").get(0)
 
-                        var titleDetail = postContent.getElementsByClass("media").get(0)
-                        //标题
-                        var title = titleDetail.getElementsByTag("h4").text()
-                        //头像
-                        var avatar = titleDetail.getElementsByTag("img").attr("src")
-                        //等级
-                        var level = titleDetail.getElementsByTag("i").text()
-                        //用户名
-                        var username = titleDetail.getElementsByClass("username").get(0).text()
-                        //发布时间
-                        var postTime =
-                            titleDetail.getElementsByClass("date text-grey ml-2").get(0).text()
-                        //内容
-                        var content = postContent.getElementsByClass("message break-all").get(0)
-                        var user = User(userName = username, avatar = avatar, level = level)
-                        //评论
-                        var commentDetail = document.getElementsByClass("card card-postlist").get(0)
-                        var commentTitle = commentDetail.getElementsByClass("card-title").get(0)
-                        var commentNum = commentTitle.getElementsByClass("posts").get(0).text()
-                        var commentListDetail =
-                            commentDetail.getElementsByClass("list-unstyled postlist")
-                        var commentPage=0
-                        var commentPageData= document.getElementsByClass("pagination my-4 justify-content-center flex-wrap")
-                        if(commentPageData.isNotEmpty()) {
-                            var commentPages = commentPageData.get(0).getElementsByClass("page-item")
-                            commentPage=commentPages.get(commentPages.size-2).text().replace("...","").toInt()
-                        }
-                        var commentList = ArrayList<CommentBean>()
-                        if (commentListDetail.isNotEmpty()) {
-                            var origincommentList =
-                                commentListDetail.get(0).getElementsByClass("media post")
-                            origincommentList.forEach {
-                                var commentBean = CommentBean()
-                                commentBean.quoteid=it.attr("data-pid")
-                                commentBean.commentContent =
-                                    it.getElementsByClass("message mt-1 break-all").get(0).html()
-                                var avatar = it.getElementsByTag("img").attr("src")
-                                var level =
-                                    it.getElementsByClass("padding-bottom:0;margin-bottom:0;color:; ")
-                                        .text()
-                                var username = it.getElementsByClass("username").text()
-                                var link = it.getElementsByTag("a").attr("href")
-                                commentBean.user = User(
-                                    avatar = avatar,
-                                    level = level,
-                                    userName = username,
-                                    userLink = link
-                                )
-                                commentList.add(commentBean)
+                        if(postContent.text().contains("主题不存在"))
+                            singletopicError.postValue("主题不存在")
+                        else {
+                            var titleDetail = postContent.getElementsByClass("media").get(0)
+                            //标题
+                            var title = titleDetail.getElementsByTag("h4").text()
+                            //头像
+                            var avatar = titleDetail.getElementsByTag("img").attr("src")
+                            //等级
+                            var level = titleDetail.getElementsByTag("i").text()
+                            //用户名
+                            var username = titleDetail.getElementsByClass("username").get(0).text()
+                            //发布时间
+                            var postTime =
+                                titleDetail.getElementsByClass("date text-grey ml-2").get(0).text()
+                            var likeNum =
+                                document.getElementsByClass("haya-post-like-post-user-count").get(0)
+                                    .text().toInt()
+                            //内容
+                            var content = postContent.getElementsByClass("message break-all").get(0)
+                            var user = User(userName = username, avatar = avatar, level = level)
+                            //评论
+                            var commentDetail =
+                                document.getElementsByClass("card card-postlist").get(0)
+                            var commentTitle = commentDetail.getElementsByClass("card-title").get(0)
+                            var commentNum = commentTitle.getElementsByClass("posts").get(0).text()
+                            var commentListDetail =
+                                commentDetail.getElementsByClass("list-unstyled postlist")
+                            var commentPage = 0
+                            var commentPageData =
+                                document.getElementsByClass("pagination my-4 justify-content-center flex-wrap")
+                            if (commentPageData.isNotEmpty()) {
+                                var commentPages =
+                                    commentPageData.get(0).getElementsByClass("page-item")
+                                commentPage = commentPages.get(commentPages.size - 2).text()
+                                    .replace("...", "").toInt()
                             }
-                        }
-                        var commentListBean =
-                            CommentListBean(commentNum = commentNum, commentList = commentList)
-                        singletopicData.postValue(
-                            SingleTopicBean(
-                                title = title,
-                                content = content.html(),
-                                user = user,
-                                postTime = postTime,
-                                commentDetail = commentListBean,
-                                commentPage =commentPage
+
+                            var commentList = ArrayList<CommentBean>()
+                            if (commentListDetail.isNotEmpty()) {
+                                var origincommentList =
+                                    commentListDetail.get(0).getElementsByClass("media post")
+                                origincommentList.forEach {
+                                    var commentBean = CommentBean()
+                                    commentBean.quoteid = it.attr("data-pid")
+                                    commentBean.commentContent =
+                                        it.getElementsByClass("message mt-1 break-all").get(0)
+                                            .html()
+                                    var avatar = it.getElementsByTag("img").attr("src")
+                                    var level =
+                                        it.getElementsByClass("padding-bottom:0;margin-bottom:0;color:; ")
+                                            .text()
+                                    var username = it.getElementsByClass("username").text()
+                                    var link = it.getElementsByTag("a").attr("href")
+                                    commentBean.user = User(
+                                        avatar = avatar,
+                                        level = level,
+                                        userName = username,
+                                        userLink = link
+                                    )
+                                    commentBean.likeNum = likeNum
+                                    commentBean.postTime =
+                                        it.getElementsByClass("date text-grey ml-2").get(0).text()
+                                    commentList.add(commentBean)
+                                }
+                            }
+                            var commentListBean =
+                                CommentListBean(commentNum = commentNum, commentList = commentList)
+                            singletopicData.postValue(
+                                SingleTopicBean(
+                                    title = title,
+                                    content = content.html(),
+                                    user = user,
+                                    postTime = postTime,
+                                    commentDetail = commentListBean,
+                                    commentPage = commentPage,
+                                )
                             )
-                        )
+                        }
                     }
                 }
 
@@ -151,6 +167,10 @@ class SingleTopicViewModel : ViewModel() {
                                             .text()
                                     var username = it.getElementsByClass("username").text()
                                     var link = it.getElementsByTag("a").attr("href")
+                                    commentBean.postTime =
+                                        it.getElementsByClass("date text-grey ml-2").get(0).text()
+                                    var likeNum=it.getElementsByClass("haya-post-like-post-user-count").get(0).text().toInt()
+                                    commentBean.likeNum=likeNum
                                     commentBean.user = User(
                                         avatar = avatar,
                                         level = level,

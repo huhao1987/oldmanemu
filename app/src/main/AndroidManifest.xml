@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Oldmanemu"
         tools:targetApi="31">
         <activity
+            android:name=".activities.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.EditorActivity"
             android:exported="false" />
         <activity
@@ -31,6 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.SingleTopicActivity"
+            android:launchMode="singleTask"
             android:exported="false" />
         <activity
             android:name=".activities.LoginActivity"

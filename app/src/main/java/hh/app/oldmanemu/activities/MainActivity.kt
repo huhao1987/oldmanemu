@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.notifyarea.setOnClickListener {
-            startActivity(Intent(this,NotificationSettingActivity::class.java))
+            startActivity(Intent(this,NotificationActivity::class.java))
         }
     }
 

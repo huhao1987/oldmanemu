@@ -13,5 +13,6 @@ data class User(
     var replyNum:Int=0,
     var featuredPostNum:Int=0,
     var userGroup:String="",
+    var postTime:String="",
     var postToplist: ArrayList<TopicBean>? = ArrayList<TopicBean>()
 )

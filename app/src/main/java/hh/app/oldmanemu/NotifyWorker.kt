@@ -10,6 +10,9 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
+import com.blankj.utilcode.util.AppUtils
+import com.kongzue.dialogx.dialogs.PopTip
+import com.kongzue.dialogx.interfaces.DialogXStyle
 import hh.app.oldmanemu.activities.MainActivity
 import hh.app.oldmanemu.retrofit.GetPespo
 import hh.app.oldmanemu.retrofit.OldmanService
@@ -43,7 +46,7 @@ class NotifyWorker(var cont: Context, workerParameters: WorkerParameters) :
 
     override fun doWork(): Result {
         var cookie = inputData.getString("cookie")
-        var unreadNum=0
+        var unreadNum = 0
         GetPespo
             .init(cookie)
             .create(OldmanService::class.java)
@@ -51,12 +54,21 @@ class NotifyWorker(var cont: Context, workerParameters: WorkerParameters) :
             .body()?.apply {
                 Jsoup.parse(string()).apply {
                     getElementsByClass("notice media text-small ").forEach {
-                        var unReads=it.getElementsByClass("readbtn btn btn-small btn-light ml-2 text-muted")
-                        if(unReads.isNotEmpty())
-                        unreadNum++
+                        var unReads =
+                            it.getElementsByClass("readbtn btn btn-small btn-light ml-2 text-muted")
+                        if (unReads.isNotEmpty())
+                            unreadNum++
                     }
-                    if(unreadNum>0)
-                        CreateNotification(unreadNum.toString())
+                    if (unreadNum > 0) {
+                        if (!AppUtils.isAppForeground()) CreateNotification(unreadNum.toString())
+                        PopTip
+                            .show(
+                                R.drawable.ic_notification,
+                                cont.getString(R.string.notificationtext, "2")
+                            ).also {
+                                it.align = DialogXStyle.PopTipSettings.ALIGN.TOP
+                            }
+                    }
                 }
             }
 //            .getHomepage()

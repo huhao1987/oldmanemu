@@ -37,7 +37,7 @@ class TopicListAdapter(var context:Context,list: ArrayList<TopicBean>, var onCli
         holder.poster.text=topic.postDetail
         holder.favNum.text="点赞数:"+topic.favNum
         holder.replyNum.text="回复数:"+topic.replyNum
-        holder.replyDetail.text=topic.replyDetail
+        holder.replyDetail.text=topic.replyDetail+" "+topic.replyTime
 
         holder.itemView.setOnClickListener {
             onClickListener?.onclick(position,topic)
