@@ -61,19 +61,25 @@ class NotifyWorker(var cont: Context, workerParameters: WorkerParameters) :
                             unreadNum++
                     }
                     if (unreadNum > 0) {
-                        if (!AppUtils.isAppForeground()) CreateNotification(unreadNum.toString())
-                        PopTip
-                            .show(
-                                R.drawable.ic_notification,
-                                cont.getString(R.string.notificationtext, "2")
-                            ).also {
-                                it.align = DialogXStyle.PopTipSettings.ALIGN.TOP
-                            }.setOnPopTipClickListener { baseDialog, v ->
-                                applicationContext.startActivity(Intent(applicationContext, NotificationActivity::class.java).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                })
-                                false
-                            }
+                        if (!AppUtils.isAppForeground("hh.app.oldmanemu")) CreateNotification(unreadNum.toString())
+                        else {
+                            PopTip
+                                .show(
+                                    R.drawable.ic_notification,
+                                    cont.getString(R.string.notificationtext, unreadNum.toString())
+                                ).also {
+                                    it.align = DialogXStyle.PopTipSettings.ALIGN.TOP
+                                }.setOnPopTipClickListener { baseDialog, v ->
+                                    applicationContext.startActivity(
+                                        Intent(
+                                            applicationContext,
+                                            NotificationActivity::class.java
+                                        ).apply {
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        })
+                                    false
+                                }
+                        }
                     }
                 }
             }
