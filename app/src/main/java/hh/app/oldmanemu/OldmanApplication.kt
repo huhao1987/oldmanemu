@@ -4,10 +4,15 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
+import android.widget.ImageView
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.kongzue.dialogx.DialogX
+import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader
+import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import java.util.concurrent.TimeUnit
 
 class OldmanApplication: Application() {
@@ -16,6 +21,7 @@ class OldmanApplication: Application() {
         DialogX.init(this)
         DialogX.globalTheme=DialogX.THEME.AUTO
         createNotificationChannel()
+        initDrawerImageLoader()
     }
 
     private fun createNotificationChannel() {
@@ -35,4 +41,16 @@ class OldmanApplication: Application() {
         }
     }
 
+    private fun initDrawerImageLoader(){
+        DrawerImageLoader.init(object : AbstractDrawerImageLoader() {
+            override fun set(imageView: ImageView, uri: Uri, placeholder: Drawable, tag: String?) {
+                GlideApp.with(imageView.context)
+                    .load(uri)
+                    .placeholder(placeholder).into(imageView)
+            }
+            override fun cancel(imageView: ImageView) {
+                GlideApp.with(imageView.context).clear(imageView)
+            }
+        })
+    }
 }

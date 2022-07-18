@@ -1,6 +1,7 @@
 package hh.app.oldmanemu.activities
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,7 @@ import hh.app.oldmanemu.viewmodels.NotificationViewModel
 class NotificationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNotificationBinding
     private val viewModel: NotificationViewModel by viewModels<NotificationViewModel>()
-    private var notificationListAdapter:NotificationListAdapter?=null
+    private var notificationListAdapter: NotificationListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,19 +26,33 @@ class NotificationActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViews()
     }
-    private fun initViews(){
-        viewModel.getNotificationData().observe(this,{
-            it.notificationList?.let {
-                list->
-                notificationListAdapter= NotificationListAdapter(this,list,object:OnNotificationReadListener{
-                    override fun onRead(position: Int, notificationBean: NotificationBean) {
-                        viewModel.PostNotifyRead(notificationBean.dataid).observe(this@NotificationActivity,{
-                            if(it)
-                                initViews()
-                            else Toast.makeText(this@NotificationActivity,"错误",Toast.LENGTH_SHORT).show()
-                        })
-                    }
-                })
+
+    private fun initViews() {
+        viewModel.getNotificationData().observe(this, {
+            if (it.notificationList == null)
+                binding.noNotifications.visibility = View.VISIBLE
+
+            it.notificationList?.let { list ->
+                if (list.isNotEmpty())
+                    binding.noNotifications.visibility = View.GONE
+                else
+                    binding.noNotifications.visibility = View.VISIBLE
+
+                notificationListAdapter =
+                    NotificationListAdapter(this, list, object : OnNotificationReadListener {
+                        override fun onRead(position: Int, notificationBean: NotificationBean) {
+                            viewModel.PostNotifyRead(notificationBean.dataid)
+                                .observe(this@NotificationActivity, {
+                                    if (it)
+                                        initViews()
+                                    else Toast.makeText(
+                                        this@NotificationActivity,
+                                        "错误",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                })
+                        }
+                    })
                 binding.notificationList.layoutManager = LinearLayoutManager(this)
                 binding.notificationList.adapter = notificationListAdapter
             }

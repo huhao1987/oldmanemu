@@ -165,7 +165,7 @@ class SingleTopicActivity : AppCompatActivity() {
                     var commentjump = list.filter {
                         it.quoteid.equals(commentJumpId)
                     }
-                    if (commentjump.isNullOrEmpty()) {
+                    if (commentjump.size>0) {
                         var index=list.indexOf(commentjump.get(0))
                         commentList.scrollToPosition(index)
                     }
@@ -183,6 +183,10 @@ class SingleTopicActivity : AppCompatActivity() {
                             })
                     else
                         Toast.makeText(this@SingleTopicActivity, "请输入评论", Toast.LENGTH_SHORT).show()
+                }
+
+                v.findViewById<ImageView>(R.id.advanceEdit).setOnClickListener {
+                    startActivity(Intent(this@SingleTopicActivity,EditorActivity::class.java))
                 }
             }
         })

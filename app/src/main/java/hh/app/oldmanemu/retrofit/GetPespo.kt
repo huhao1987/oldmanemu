@@ -35,10 +35,17 @@ class GetPespo {
             return retrofit!!
         }
 
-        fun getHomePage(callback: Callback<ResponseBody>) {
+        fun getHomePage(position:Int,callback: Callback<ResponseBody>) {
+            var url=when(position){
+                1->""
+                2->"forum-1.htm"
+                3->"forum-2.htm"
+                4->"forum-3.htm"
+                else->""
+            }
             init()
                 .create(OldmanService::class.java)
-                .getHomepage()
+                .getHomepage(url)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,
@@ -53,10 +60,10 @@ class GetPespo {
                 })
         }
 
-        fun getMorePage(index: Int, callback: Callback<ResponseBody>) {
+        fun getMorePage(url:String,index: Int, callback: Callback<ResponseBody>) {
             init()
                 .create(OldmanService::class.java)
-                .getMorepage(index)
+                .getMorepage(url,index)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(
                         call: Call<ResponseBody>,

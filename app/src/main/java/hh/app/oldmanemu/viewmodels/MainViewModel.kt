@@ -26,9 +26,9 @@ class MainViewModel : ViewModel() {
     private var topicListData: MutableLiveData<ArrayList<TopicBean>>? = null
 
 
-    fun getHomePageData(): MutableLiveData<HomePageBean> {
+    fun getHomePageData(position:Int=0): MutableLiveData<HomePageBean> {
         viewModelScope.launch {
-            GetPespo.getHomePage(object : Callback<ResponseBody> {
+            GetPespo.getHomePage(position,object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
@@ -158,10 +158,10 @@ class MainViewModel : ViewModel() {
         return homePageData
     }
 
-    fun getMoreData(index: Int): MutableLiveData<ArrayList<TopicBean>> {
+    fun getMoreData(url:String,index: Int): MutableLiveData<ArrayList<TopicBean>> {
         topicListData = MutableLiveData<ArrayList<TopicBean>>()
         viewModelScope.launch {
-            GetPespo.getMorePage(index, object : Callback<ResponseBody> {
+            GetPespo.getMorePage(url,index, object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>

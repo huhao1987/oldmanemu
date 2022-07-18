@@ -6,4 +6,13 @@
     <string name="notification_time">设置通知时长</string>
     <string name="ok">确定</string>
     <string name="shortreply">快速回复</string>
+    <string name="nonewmessage">无新通知</string>
+    <string name="readnotifytext">已读通知</string>
+    <string name="homestr">首页</string>
+    <string name="chatstr">灌水聊天</string>
+    <string name="consolestr">主机讨论</string>
+    <string name="resorucestr">资源发布</string>
+    <string name="login">登录账号</string>
+    <string name="logout">登出账号</string>
+    <string name="notlogin">未登录</string>
 </resources>

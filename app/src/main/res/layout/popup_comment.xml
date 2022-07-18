@@ -96,13 +96,14 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/advanceEdit"
             android:src="@drawable/ic_send" />
+
         <ImageView
             android:id="@+id/advanceEdit"
-            android:src="@drawable/ic_advance_edit"
-            android:layout_marginRight="5dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_width="32dp"
-            android:layout_height="32dp"/>
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_advance_edit" />
     </RelativeLayout>
 </RelativeLayout>

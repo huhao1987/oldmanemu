@@ -8,16 +8,13 @@
     <org.wordpress.aztec.toolbar.AztecToolbar
         android:id="@+id/formatting_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/aztec_format_bar_height"
-        android:layout_alignParentBottom="true">
-    </org.wordpress.aztec.toolbar.AztecToolbar>
+        android:layout_height="@dimen/aztec_format_bar_height"/>
 
     <ScrollView
         android:id="@+id/container"
+        android:layout_below="@+id/formatting_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/formatting_toolbar"
-        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <FrameLayout

@@ -11,12 +11,12 @@ import retrofit2.http.*
 interface OldmanService {
 
     //Home page
-    @GET("/")
-    fun getHomepage(): Call<ResponseBody>
+    @GET("/{url}")
+    fun getHomepage(@Path("url")url: String=""): Call<ResponseBody>
 
     //More pages
-    @GET("/index-{index}.htm")
-    fun getMorepage(@Path("index") index: Int): Call<ResponseBody>
+    @GET("/{url}-{index}.htm")
+    fun getMorepage(@Path("url")url:String,@Path("index") index: Int): Call<ResponseBody>
 
     //Single page
     @GET("{url}")
