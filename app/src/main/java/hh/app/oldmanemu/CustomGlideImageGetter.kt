@@ -46,8 +46,9 @@ private val imagesHandler: HtmlImagesHandler? = null
             post {
                 GlideApp.with(context)
                     .asBitmap()
-                    .override(800)
                     .load(source)
+                    .transform(GifTransformation(context,source))
+                    .override(800)
                     .into(drawable)
             }
         }
@@ -119,4 +120,5 @@ private val imagesHandler: HtmlImagesHandler? = null
     interface HtmlImagesHandler {
         fun addImage(uri: String?)
     }
+
 }
