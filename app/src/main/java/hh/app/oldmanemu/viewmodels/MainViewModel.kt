@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import hh.app.oldmanemu.beans.HomePageBean
-import hh.app.oldmanemu.beans.NaviBar
-import hh.app.oldmanemu.beans.TopicBean
-import hh.app.oldmanemu.beans.User
+import hh.app.oldmanemu.beans.*
 import hh.app.oldmanemu.retrofit.GetPespo
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -24,7 +21,7 @@ import retrofit2.Response
 class MainViewModel : ViewModel() {
     private val homePageData = MutableLiveData<HomePageBean>()
     private var topicListData: MutableLiveData<ArrayList<TopicBean>>? = null
-
+    private val signData=MutableLiveData<SignBean>()
 
     fun getHomePageData(position:Int=0): MutableLiveData<HomePageBean> {
         viewModelScope.launch {
@@ -236,5 +233,33 @@ class MainViewModel : ViewModel() {
             })
         }
         return topicListData!!
+    }
+
+    fun postSign():MutableLiveData<SignBean>{
+        viewModelScope.launch {
+            GetPespo.postSign(object:Callback<ResponseBody>{
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    response.body()?.apply {
+                        var htmlStr = this.string()
+                        var document = Jsoup.parse(htmlStr)
+                        var signBean=SignBean()
+                        document.getElementsByClass("card-title text-center mb-0").getOrNull(0)?.apply {
+                            text().let {
+                                if(it.contains("签到成功")) {
+                                    signBean.isSigned = true
+                                    var result = it.filter { it.isDigit() }
+
+                                }
+                            }
+                        }
+                    }
+                    signData.postValue(response.body())
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                }
+            })
+        }
+        return signData
     }
 }

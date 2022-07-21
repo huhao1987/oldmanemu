@@ -1,5 +1,6 @@
 package hh.app.oldmanemu.retrofit
 
+import hh.app.oldmanemu.beans.BaseBean
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.ResponseBody
@@ -8,6 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
 import java.util.*
 
@@ -30,6 +32,8 @@ class GetPespo {
                 retrofit = Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .client(client)
+                    .baseUrl(GetPespo.baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }
             return retrofit!!
@@ -159,6 +163,28 @@ class GetPespo {
                     }
                 })
         }
+
+        fun postSign(
+            callback: Callback<ResponseBody>
+        ) {
+            init()
+                .create(OldmanService::class.java)
+                .postSign()
+                .enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        callback.onResponse(call, response)
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callback.onFailure(call, t)
+                    }
+                })
+        }
+
+
         fun getNotification(callback: Callback<ResponseBody>){
             init()
                 .create(OldmanService::class.java)

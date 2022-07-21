@@ -15,20 +15,20 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
-        <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+        <TextView
+            android:id="@+id/sign"
+            android:text="签到"
+            android:layout_marginRight="10dp"
+            android:textSize="17dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp" />
-
-
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <RelativeLayout
             android:id="@+id/notifyarea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/userName"
             android:visibility="gone">
 
             <ImageView
@@ -38,7 +38,7 @@
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_notification" />
 
-            <TextView
+            <com.matrixxun.starry.badgetextview.MaterialBadgeTextView
                 android:id="@+id/notifynum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,8 +46,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="-5dp"
                 android:layout_toRightOf="@+id/notify"
-                android:textColor="@color/red"
                 android:textSize="10dp"
+                android:background="@color/red"
                 android:textStyle="bold" />
         </RelativeLayout>
     </RelativeLayout>

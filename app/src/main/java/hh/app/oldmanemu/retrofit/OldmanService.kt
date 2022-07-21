@@ -1,5 +1,6 @@
 package hh.app.oldmanemu.retrofit
 
+import hh.app.oldmanemu.beans.BaseBean
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -47,5 +48,6 @@ interface OldmanService {
         @Field("act") act: String="readone"
         ): Call<ResponseBody>
 
-
+    @POST("/my-sign.htm")
+    fun postSign(): Call<ResponseBody>
 }

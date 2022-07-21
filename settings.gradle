@@ -20,3 +20,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "oldmanemu"
 include ':app'
+include ':glide-loader'
+include ':media-placeholders'

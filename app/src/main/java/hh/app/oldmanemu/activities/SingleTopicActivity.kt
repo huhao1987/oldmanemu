@@ -76,7 +76,7 @@ class SingleTopicActivity : AppCompatActivity() {
                 }
                 binding.posterName.text = it.user.userName
                 GlideApp.with(this)
-                    .load(GetPespo.baseUrl + it.user.avatar)
+                    .load( it.user.avatar)
                     .into(binding.posterAvatar)
                 binding.posterDetail.text = it.user.level
                 binding.postTime.text = it.postTime
@@ -138,7 +138,7 @@ class SingleTopicActivity : AppCompatActivity() {
                         override fun onclick(position: Int, commentBean: CommentBean) {
                             v.findViewById<RelativeLayout>(R.id.replyArea).visibility = View.VISIBLE
                             GlideApp.with(v)
-                                .load(GetPespo.baseUrl + commentBean.user?.avatar)
+                                .load( commentBean.user?.avatar)
                                 .into(v.findViewById<ImageView>(R.id.replyAvatar))
                             v.findViewById<TextView>(R.id.replyPoster).text =
                                 commentBean.user?.userName

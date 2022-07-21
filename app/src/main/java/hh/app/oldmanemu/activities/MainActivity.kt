@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.matrixxun.starry.badgetextview.MenuItemBadge
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.iconRes
@@ -179,14 +181,11 @@ class MainActivity : AppCompatActivity() {
             pageNum = it.endPage
             setUpLogin(it)
 
-            GlideApp.with(this)
-                .load(GetPespo.baseUrl + it.userInfo?.avatar)
-                .into(binding.userAvatar)
             if (it.notifyNum > 0) {
-                binding.notifynum.text = it.notifyNum.toString()
+                binding.notifynum.setBadgeCount(it.notifyNum.toString())
                 binding.notifyarea.visibility = View.VISIBLE
             } else {
-                binding.notifynum.text = ""
+                binding.notifynum.setText("")
             }
 
             adapter = TopicListAdapter(this, it.topicList!!, object : onClickListener {
@@ -238,6 +237,18 @@ class MainActivity : AppCompatActivity() {
         }
         SharePerferencesUtil.sharedPreferences?.getString("cookie", null)?.apply {
             NotifyWorker.SetupNotifyWorker(this@MainActivity, this)
+            binding.sign.setOnClickListener {
+                viewModel.postSign().observe(this@MainActivity,{
+                    when(it.code){
+                        "-1"->{
+                            Toast.makeText(this@MainActivity,it.message,Toast.LENGTH_SHORT).show()
+                        }
+                        "0"->{
+
+                        }
+                    }
+                })
+            }
             AccountHeaderView(this@MainActivity).apply {
                 var login_Btn=findViewById<Button>(R.id.materian_drawer_button)
                 login_Btn?.text = "登出账号"
@@ -253,7 +264,7 @@ class MainActivity : AppCompatActivity() {
                     nameText = homePageBean.userInfo?.userName?:getString(R.string.notlogin)
                     if (homePageBean.userInfo?.avatar == "") iconRes = R.drawable.main
                     else
-                        iconUrl = GetPespo.baseUrl + homePageBean.userInfo?.avatar
+                        iconUrl =  homePageBean.userInfo?.avatar?:""
                 })
                 selectionListEnabledForSingleProfile = false
                 attachToSliderView(binding.slideMenu)

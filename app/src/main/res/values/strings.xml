@@ -15,4 +15,5 @@
     <string name="login">登录账号</string>
     <string name="logout">登出账号</string>
     <string name="notlogin">未登录</string>
+    <string name="pickupcolor">选取颜色</string>
 </resources>
