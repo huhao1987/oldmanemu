@@ -247,13 +247,16 @@ class MainViewModel : ViewModel() {
                             text().let {
                                 if(it.contains("签到成功")) {
                                     signBean.isSigned = true
-                                    var result = it.filter { it.isDigit() }
-
+//                                    var result = it.filter { it.isDigit() }
+//                                    result
                                 }
+                                else
+                                    signBean.isSigned = false
+
+                                signData.postValue(signBean)
                             }
                         }
                     }
-                    signData.postValue(response.body())
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

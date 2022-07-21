@@ -239,14 +239,11 @@ class MainActivity : AppCompatActivity() {
             NotifyWorker.SetupNotifyWorker(this@MainActivity, this)
             binding.sign.setOnClickListener {
                 viewModel.postSign().observe(this@MainActivity,{
-                    when(it.code){
-                        "-1"->{
-                            Toast.makeText(this@MainActivity,it.message,Toast.LENGTH_SHORT).show()
-                        }
-                        "0"->{
+                    if(it.isSigned)
+                        Toast.makeText(this@MainActivity,"签到成功",Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(this@MainActivity,"您今天已签到过了",Toast.LENGTH_SHORT).show()
 
-                        }
-                    }
                 })
             }
             AccountHeaderView(this@MainActivity).apply {
