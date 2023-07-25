@@ -15,7 +15,7 @@ import java.util.*
 
 class GetPespo {
     companion object {
-        var baseUrl = "https://bbs.oldmanemu.net/"
+        var baseUrl = "https://bbs.oldmantvg.net/"
         var cookie = ""
         var retrofit: Retrofit? = null
 
